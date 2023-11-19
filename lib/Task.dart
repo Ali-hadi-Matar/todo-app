@@ -4,6 +4,6 @@ class Task {
   String description;
   DateTime? date;
   TimeOfDay? time;
-
-  Task(this.description, this.date, this.time);
+  bool isSelected;
+  Task(this.description, this.date, this.time): isSelected=false;
 }

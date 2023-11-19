@@ -20,7 +20,19 @@ class TaskList extends StatefulWidget {
 
 class _TaskListState extends State<TaskList> {
   List<Task> tasks = [];
-
+  bool isDeleteButtonVisible = false;
+  void _toggleTaskSelection(int index) {
+    setState(() {
+      tasks[index].isSelected = !tasks[index].isSelected;
+      isDeleteButtonVisible = tasks.any((task) => task.isSelected);
+    });
+  }
+  void _deleteSelectedTasks() {
+    setState(() {
+      tasks.removeWhere((task) => task.isSelected);
+      isDeleteButtonVisible = false;
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,6 +43,10 @@ class _TaskListState extends State<TaskList> {
         itemCount: tasks.length,
         itemBuilder: (context, index) {
           return ListTile(
+            leading: Checkbox(
+              value: tasks[index].isSelected,
+              onChanged: (value)=>_toggleTaskSelection(index),
+            ),
             title: Text(tasks[index].description),
             subtitle: Text(
               'Date: ${tasks[index].date?.toLocal().toString() ?? 'Not set'}\n'
@@ -41,7 +57,6 @@ class _TaskListState extends State<TaskList> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          // Navigate to AddTask and wait for a result
           final result = await Navigator.push(
             context,
             MaterialPageRoute(
@@ -49,15 +64,22 @@ class _TaskListState extends State<TaskList> {
             ),
           );
 
-          // Check the result and trigger a rebuild if needed
           if (result == true) {
             setState(() {
-              // Trigger a rebuild of the TaskList widget
             });
           }
         },
         child: Icon(Icons.add),
       ),
+      persistentFooterButtons:isDeleteButtonVisible ?[
+        ElevatedButton(
+          onPressed: () {
+            _deleteSelectedTasks();
+          },
+          child: Text('Delete Selected'),
+        ),
+      ]
+      :null,
     );
   }
 }

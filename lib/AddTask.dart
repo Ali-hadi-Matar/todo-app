@@ -45,7 +45,7 @@ class _AddTaskState extends State<AddTask> {
   }
 
   void _addTask() {
-    // Create a new Task and add it to the tasks list
+
     Task newTask = Task(
       _descriptionController.text,
       _selectedDate,
@@ -56,7 +56,7 @@ class _AddTaskState extends State<AddTask> {
       widget.tasks.add(newTask);
     });
 
-    Navigator.pop(context,true); // Close the add task screen
+    Navigator.pop(context,true);
   }
 
   @override
