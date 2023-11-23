@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 import 'AddTask.dart';
 import 'Task.dart';
-
+import 'Note.dart';
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      theme: ThemeData(
+        primaryColor: Color(0xFF00023D),
+        hintColor: Color(0xFF2A6594),
+      ),
       home: TaskList(),
     );
   }
@@ -33,27 +37,55 @@ class _TaskListState extends State<TaskList> {
       isDeleteButtonVisible = false;
     });
   }
+  void _navigateToNotesPage() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => NotesList(),
+      ),
+    );
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('To-Do List'),
+        backgroundColor: Color(0xFF00023D),
+        centerTitle: true,
+        actions: [
+          IconButton(
+            icon: Icon(Icons.note),
+            onPressed: _navigateToNotesPage,
+            color: Color(0xFF2A6594),
+
+          ),
+        ],
       ),
-      body: ListView.builder(
-        itemCount: tasks.length,
-        itemBuilder: (context, index) {
-          return ListTile(
-            leading: Checkbox(
-              value: tasks[index].isSelected,
-              onChanged: (value)=>_toggleTaskSelection(index),
-            ),
-            title: Text(tasks[index].description),
-            subtitle: Text(
-              'Date: ${tasks[index].date?.toLocal().toString() ?? 'Not set'}\n'
-                  'Time: ${tasks[index].time?.format(context) ?? 'Not set'}',
-            ),
-          );
-        },
+      body: Container(
+        decoration: BoxDecoration(
+          color: Color(0xFF2A6594),
+        ),
+        child: ListView.builder(
+          itemCount: tasks.length,
+          itemBuilder: (context, index) {
+            return Card(
+              color: Colors.white,
+              elevation: 2,
+              margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+              child: ListTile(
+                leading: Checkbox(
+                  value: tasks[index].isSelected,
+                  onChanged: (value) => _toggleTaskSelection(index),
+                ),
+                title: Text(tasks[index].description),
+                subtitle: Text(
+                  'Date: ${tasks[index].date?.toLocal().toString() ?? 'Not set'}\n'
+                      'Time: ${tasks[index].time?.format(context) ?? 'Not set'}',
+                ),
+              ),
+            );
+          },
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
@@ -70,12 +102,17 @@ class _TaskListState extends State<TaskList> {
           }
         },
         child: Icon(Icons.add),
+        backgroundColor: Color(0xFF00023D),
+
       ),
       persistentFooterButtons:isDeleteButtonVisible ?[
         ElevatedButton(
           onPressed: () {
             _deleteSelectedTasks();
           },
+          style: ElevatedButton.styleFrom(
+            primary: Color(0xFF2A6594),
+          ),
           child: Text('Delete Selected'),
         ),
       ]
