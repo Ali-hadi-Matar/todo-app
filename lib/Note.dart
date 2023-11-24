@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
 class Note {
+  String id;
   String content;
   bool isSelected;
 
-  Note(this.content, {this.isSelected = false});
+  Note({required this.id, required this.content, this.isSelected = false});
 }
-
 
 
 class NotesList extends StatefulWidget {
@@ -33,7 +33,16 @@ class _NotesListState extends State<NotesList> {
       isDeleteButtonVisible = false;
     });
   }
-
+void _editNotes(Note note)async{
+final result=await showDialog(context: context,
+    builder:(context)=> _EditNotesDia(note:note),
+);
+if(result!=null){
+  setState(() {
+    note.content=result;
+  });
+}
+}
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -59,6 +68,9 @@ class _NotesListState extends State<NotesList> {
                   onChanged: (value) => _toggleNoteSelection(index),
                 ),
                 title: Text(notes[index].content),
+                onTap: (){
+                  _editNotes(notes[index]);
+                },
               ),
             );
           },
@@ -73,7 +85,8 @@ class _NotesListState extends State<NotesList> {
 
           if (result != null && result.isNotEmpty) {
             setState(() {
-              notes.add(Note(result));
+              String uniqueId = DateTime.now().millisecondsSinceEpoch.toString();
+              notes.add(Note(id: uniqueId, content: result));
             });
           }
         },
@@ -96,6 +109,60 @@ class _NotesListState extends State<NotesList> {
     );
   }
 }
+class _EditNotesDia extends StatefulWidget {
+  final Note note;
+
+  // Corrected the constructor
+  const _EditNotesDia({Key? key, required this.note}) : super(key: key);
+
+  @override
+  State<_EditNotesDia> createState() => _EditNotesDiaState();
+}
+class _EditNotesDiaState extends State<_EditNotesDia> {
+  final TextEditingController _noteController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _noteController.text = widget.note.content;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text('Edit Note'),
+      backgroundColor: Theme.of(context).primaryColor,
+      content: TextField(
+        controller: _noteController,
+        decoration: InputDecoration(
+          labelText: 'Edit your note',
+          labelStyle: TextStyle(color: Theme.of(context).colorScheme.secondary),
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          style: TextButton.styleFrom(
+            primary: Theme.of(context).colorScheme.secondary,
+          ),
+          child: const Text('Cancel'),
+        ),
+        ElevatedButton(
+          onPressed: () {
+            Navigator.pop(context, _noteController.text);
+          },
+          style: ElevatedButton.styleFrom(
+            primary: Theme.of(context).primaryColor,
+          ),
+          child: const Text('Save Changes'),
+        ),
+      ],
+    );
+  }
+}
+
 
 
 class _AddNoteDialog extends StatefulWidget {
