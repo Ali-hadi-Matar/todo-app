@@ -48,18 +48,18 @@ if(result!=null){
     return Scaffold(
       appBar: AppBar(
         title:const Text('Notes List'),
-        backgroundColor: Theme.of(context).primaryColor, // Set the app bar color
+        backgroundColor: Theme.of(context).primaryColor,
         centerTitle: true,
       ),
       body: Container(
         decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.secondary, // Set the body background color
+          color: Theme.of(context).colorScheme.secondary,
         ),
         child: ListView.builder(
           itemCount: notes.length,
           itemBuilder: (context, index) {
             return Card(
-              color: Colors.white, // Set the card background color
+              color: Colors.white,
               elevation: 2,
               margin:const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
               child: ListTile(
@@ -91,7 +91,7 @@ if(result!=null){
           }
         },
         backgroundColor: Theme.of(context).primaryColor,
-        child:const Icon(Icons.add), // Set the FAB color
+        child:const Icon(Icons.add),
       ),
       persistentFooterButtons: isDeleteButtonVisible
           ? [
@@ -100,7 +100,7 @@ if(result!=null){
             _deleteSelectedNotes();
           },
           style: ElevatedButton.styleFrom(
-            primary: Theme.of(context).primaryColor, // Set the button color
+            primary: Theme.of(context).primaryColor,
           ),
           child:const Text('Delete Selected'),
         ),
@@ -112,7 +112,6 @@ if(result!=null){
 class _EditNotesDia extends StatefulWidget {
   final Note note;
 
-  // Corrected the constructor
   const _EditNotesDia({Key? key, required this.note}) : super(key: key);
 
   @override
@@ -177,12 +176,12 @@ class __AddNoteDialogState extends State<_AddNoteDialog> {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: const Text('Add Note'),
-      backgroundColor: Theme.of(context).primaryColor, // Set the dialog background color
+      backgroundColor: Theme.of(context).primaryColor,
       content: TextField(
         controller: _noteController,
         decoration: InputDecoration(
           labelText: 'Enter your note',
-          labelStyle: TextStyle(color: Theme.of(context).colorScheme.secondary), // Set the label color
+          labelStyle: TextStyle(color: Theme.of(context).colorScheme.secondary),
         ),
       ),
       actions: [
@@ -191,7 +190,7 @@ class __AddNoteDialogState extends State<_AddNoteDialog> {
             Navigator.pop(context);
           },
           style: TextButton.styleFrom(
-            primary: Theme.of(context).colorScheme.secondary, // Set the text color
+            primary: Theme.of(context).colorScheme.secondary,
           ),
           child: const Text('Cancel'),
         ),
@@ -200,7 +199,7 @@ class __AddNoteDialogState extends State<_AddNoteDialog> {
             Navigator.pop(context, _noteController.text);
           },
           style: ElevatedButton.styleFrom(
-            primary: Theme.of(context).primaryColor, // Set the button color
+            primary: Theme.of(context).primaryColor,
           ),
           child: const Text('Add Note'),
         ),
