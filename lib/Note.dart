@@ -10,6 +10,8 @@ class Note {
 
 
 class NotesList extends StatefulWidget {
+  const NotesList({super.key});
+
   @override
   _NotesListState createState() => _NotesListState();
 }
@@ -36,7 +38,7 @@ class _NotesListState extends State<NotesList> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Notes List'),
+        title:const Text('Notes List'),
         backgroundColor: Theme.of(context).primaryColor, // Set the app bar color
         centerTitle: true,
       ),
@@ -50,7 +52,7 @@ class _NotesListState extends State<NotesList> {
             return Card(
               color: Colors.white, // Set the card background color
               elevation: 2,
-              margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+              margin:const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
               child: ListTile(
                 leading: Checkbox(
                   value: notes[index].isSelected,
@@ -75,8 +77,8 @@ class _NotesListState extends State<NotesList> {
             });
           }
         },
-        child: Icon(Icons.add),
-        backgroundColor: Theme.of(context).primaryColor, // Set the FAB color
+        backgroundColor: Theme.of(context).primaryColor,
+        child:const Icon(Icons.add), // Set the FAB color
       ),
       persistentFooterButtons: isDeleteButtonVisible
           ? [
@@ -87,7 +89,7 @@ class _NotesListState extends State<NotesList> {
           style: ElevatedButton.styleFrom(
             primary: Theme.of(context).primaryColor, // Set the button color
           ),
-          child: Text('Delete Selected'),
+          child:const Text('Delete Selected'),
         ),
       ]
           : null,
@@ -102,12 +104,12 @@ class _AddNoteDialog extends StatefulWidget {
 }
 
 class __AddNoteDialogState extends State<_AddNoteDialog> {
-  TextEditingController _noteController = TextEditingController();
+  final TextEditingController _noteController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text('Add Note'),
+      title: const Text('Add Note'),
       backgroundColor: Theme.of(context).primaryColor, // Set the dialog background color
       content: TextField(
         controller: _noteController,
@@ -124,7 +126,7 @@ class __AddNoteDialogState extends State<_AddNoteDialog> {
           style: TextButton.styleFrom(
             primary: Theme.of(context).colorScheme.secondary, // Set the text color
           ),
-          child: Text('Cancel'),
+          child: const Text('Cancel'),
         ),
         ElevatedButton(
           onPressed: () {
@@ -133,7 +135,7 @@ class __AddNoteDialogState extends State<_AddNoteDialog> {
           style: ElevatedButton.styleFrom(
             primary: Theme.of(context).primaryColor, // Set the button color
           ),
-          child: Text('Add Note'),
+          child: const Text('Add Note'),
         ),
       ],
     );

@@ -4,14 +4,14 @@ import 'Task.dart';
 class AddTask extends StatefulWidget {
   final List<Task> tasks;
 
-  AddTask(this.tasks);
+  const AddTask(this.tasks, {super.key});
 
   @override
   _AddTaskState createState() => _AddTaskState();
 }
 
 class _AddTaskState extends State<AddTask> {
-  TextEditingController _descriptionController = TextEditingController();
+  final TextEditingController _descriptionController = TextEditingController();
   DateTime? _selectedDate;
   TimeOfDay? _selectedTime;
 
@@ -61,84 +61,84 @@ class _AddTaskState extends State<AddTask> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Add Task'),
+        title: const Text('Add Task'),
         backgroundColor: Theme.of(context).primaryColor,
       ),
       body:Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           color: Color(0xFF2A6594), // Set the body background color
         ),
       child: Padding(
 
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
             TextField(
               controller: _descriptionController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Enter new task',
                 border: OutlineInputBorder(),
                 filled: true,
                 fillColor: Colors.white,
               ),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             ElevatedButton(
               onPressed: () => _selectDate(context),
+              style: ElevatedButton.styleFrom(
+                primary: Theme.of(context).primaryColor,
+              ),
               child: Row(
                 children: [
                   Icon(
                     Icons.calendar_today,
                     color: Theme.of(context).primaryColor,
                   ),
-                  SizedBox(width: 8),
-                  Text('Select Date'),
+                  const  SizedBox(width: 8),
+                const  Text('Select Date'),
                 ],
               ),
-              style: ElevatedButton.styleFrom(
-                primary: Theme.of(context).primaryColor,
-              ),
             ),
-            SizedBox(height: 8),
+           const SizedBox(height: 8),
             Text(
               _selectedDate == null
                   ? 'No Date Selected'
                   : 'Selected Date: ${_selectedDate!.toLocal()}',
             ),
-            SizedBox(height: 16),
+           const SizedBox(height: 16),
 
 
 
             ElevatedButton(
               onPressed: () => _selectTime(context),
+              style: ElevatedButton.styleFrom(
+                primary: Theme.of(context).primaryColor,
+              ),
               child: Row(
                 children: [
                   Icon(
                     Icons.access_time,
                     color: Theme.of(context).primaryColor,
                   ),
-                  SizedBox(width: 8),
-                  Text('Select Time'),
+                  const SizedBox(width: 8),
+                const  Text('Select Time'),
                 ],
-              ),
-              style: ElevatedButton.styleFrom(
-                primary: Theme.of(context).primaryColor,
               ),
             ),
 
-            SizedBox(height: 8),
+           const SizedBox(height: 8),
             Text(
               _selectedTime == null
                   ? 'No Time Selected'
                   : 'Selected Time: ${_selectedTime!.format(context)}',
             ),
-            SizedBox(height: 16),
+           const SizedBox(height: 16),
             ElevatedButton(
               onPressed: _addTask,
-              child: Text('Add Task'),
               style: ElevatedButton.styleFrom(
                 primary: Theme.of(context).primaryColor,
               ),
+              child:const Text('Add Task'),
             ),
 
           ],

@@ -8,9 +8,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primaryColor: Color(0xFF00023D),
-        hintColor: Color(0xFF2A6594),
+        primaryColor: const Color(0xFF00023D),
+        hintColor:const Color(0xFF2A6594),
       ),
       home: TaskList(),
     );
@@ -19,12 +20,13 @@ class MyApp extends StatelessWidget {
 
 class TaskList extends StatefulWidget {
   @override
-  _TaskListState createState() => _TaskListState();
+   _TaskListState createState() => _TaskListState();
 }
 
 class _TaskListState extends State<TaskList> {
   List<Task> tasks = [];
   bool isDeleteButtonVisible = false;
+  bool _sortByNew=true;
   void _toggleTaskSelection(int index) {
     setState(() {
       tasks[index].isSelected = !tasks[index].isSelected;
@@ -35,6 +37,7 @@ class _TaskListState extends State<TaskList> {
     setState(() {
       tasks.removeWhere((task) => task.isSelected);
       isDeleteButtonVisible = false;
+
     });
   }
   void _navigateToNotesPage() {
@@ -45,25 +48,42 @@ class _TaskListState extends State<TaskList> {
       ),
     );
   }
+  void _sortTasksByDate(){
+    setState(() {
+      _sortByNew=!_sortByNew;
+      tasks.sort((a,b){
+        final adate=a.date?? DateTime(0);
+        final bdate=b.date?? DateTime(0);
+        if (_sortByNew) {
+          return b.date!.compareTo(adate);
+
+    }else{
+          return a.date!.compareTo(bdate);
+        }
+    });
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('To-Do List'),
-        backgroundColor: Color(0xFF00023D),
+        title:const Text('To-Do List'),
+        backgroundColor:const  Color(0xFF00023D),
         centerTitle: true,
         actions: [
           IconButton(
-            icon: Icon(Icons.note),
+            icon:const Icon(Icons.note),
             onPressed: _navigateToNotesPage,
-            color: Color(0xFF2A6594),
+            color:const Color(0xFF2A6594),
 
           ),
+          IconButton(onPressed: _sortTasksByDate, icon: Icon(_sortByNew? Icons.arrow_downward:Icons.arrow_upward))
         ],
+        
       ),
       body: Container(
-        decoration: BoxDecoration(
-          color: Color(0xFF2A6594),
+        decoration:const  BoxDecoration(
+          color: const Color(0xFF2A6594),
         ),
         child: ListView.builder(
           itemCount: tasks.length,
@@ -71,7 +91,7 @@ class _TaskListState extends State<TaskList> {
             return Card(
               color: Colors.white,
               elevation: 2,
-              margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+              margin:const  EdgeInsets.symmetric(vertical: 8, horizontal: 16),
               child: ListTile(
                 leading: Checkbox(
                   value: tasks[index].isSelected,
@@ -102,7 +122,7 @@ class _TaskListState extends State<TaskList> {
           }
         },
         child: Icon(Icons.add),
-        backgroundColor: Color(0xFF00023D),
+        backgroundColor: const Color(0xFF00023D),
 
       ),
       persistentFooterButtons:isDeleteButtonVisible ?[
@@ -111,9 +131,9 @@ class _TaskListState extends State<TaskList> {
             _deleteSelectedTasks();
           },
           style: ElevatedButton.styleFrom(
-            primary: Color(0xFF2A6594),
+            primary: const Color(0xFF2A6594),
           ),
-          child: Text('Delete Selected'),
+          child: const Text('Delete Selected'),
         ),
       ]
       :null,
