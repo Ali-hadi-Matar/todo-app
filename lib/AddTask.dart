@@ -62,6 +62,7 @@ class _AddTaskState extends State<AddTask> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Add Task'),
+        centerTitle: true,
         backgroundColor: Theme.of(context).primaryColor,
       ),
       body:Container(

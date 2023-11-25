@@ -48,19 +48,22 @@ class _TaskListState extends State<TaskList> {
       ),
     );
   }
-  void _sortTasksByDate(){
+  void _sortTasksByDate() {
     setState(() {
-      _sortByNew=!_sortByNew;
-      tasks.sort((a,b){
-        final adate=a.date?? DateTime(0);
-        final bdate=b.date?? DateTime(0);
-        if (_sortByNew) {
-          return b.date!.compareTo(adate);
+      _sortByNew = !_sortByNew;
+      tasks.sort((a, b) {
+        final adate = a.date ?? DateTime(0);
+        final bdate = b.date ?? DateTime(0);
 
-    }else{
-          return a.date!.compareTo(bdate);
+        final aDateOnly = DateTime(adate.year, adate.month, adate.day);
+        final bDateOnly = DateTime(bdate.year, bdate.month, bdate.day);
+
+        if (_sortByNew) {
+          return bDateOnly.compareTo(aDateOnly);
+        } else {
+          return aDateOnly.compareTo(bDateOnly);
         }
-    });
+      });
     });
   }
   @override
@@ -86,7 +89,7 @@ class _TaskListState extends State<TaskList> {
           color: const Color(0xFF2A6594),
         ),
         child: tasks.isEmpty
-            ? Center(
+            ? const Center(
           child: Text(
             'Nothing to do!\nEnjoy your day!',
             style: TextStyle(fontSize: 40, color: Colors.white),

@@ -164,7 +164,7 @@ class _EditNotesDiaState extends State<_EditNotesDia> {
 
 
 
-class _AddNoteDialog extends StatefulWidget {
+class  _AddNoteDialog extends StatefulWidget {
   @override
   __AddNoteDialogState createState() => __AddNoteDialogState();
 }
