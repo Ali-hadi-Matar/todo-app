@@ -85,13 +85,21 @@ class _TaskListState extends State<TaskList> {
         decoration:const  BoxDecoration(
           color: const Color(0xFF2A6594),
         ),
-        child: ListView.builder(
+        child: tasks.isEmpty
+            ? Center(
+          child: Text(
+            'Nothing to do!\nEnjoy your day!',
+            style: TextStyle(fontSize: 40, color: Colors.white),
+          ),
+        )
+            : ListView.builder(
           itemCount: tasks.length,
           itemBuilder: (context, index) {
             return Card(
               color: Colors.white,
               elevation: 2,
-              margin:const  EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+              margin:
+              const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
               child: ListTile(
                 leading: Checkbox(
                   value: tasks[index].isSelected,
