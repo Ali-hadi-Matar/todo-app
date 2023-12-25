@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'AddTask.dart';
 import 'Task.dart';
 import 'Note.dart';
+import 'Register.dart';
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
@@ -13,7 +14,7 @@ class MyApp extends StatelessWidget {
         primaryColor: const Color(0xFF00023D),
         hintColor:const Color(0xFF2A6594),
       ),
-      home: TaskList(),
+      home: Register(),
     );
   }
 }
