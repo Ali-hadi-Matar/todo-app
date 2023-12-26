@@ -46,8 +46,8 @@ class _RegisterState extends State<Register> {
 
           if (response.statusCode == 200) {
             print("Registration successful");
-            Navigator.push(context, MaterialPageRoute(builder: (context) => TaskList()));
-          } else {
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context) => TaskList()));          } else {
             print('Error during registration: ${response.statusCode}');
           }
         }
@@ -74,7 +74,7 @@ class _RegisterState extends State<Register> {
             children: <Widget>[
               TextFormField(
                 controller: _controllerfname,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'First Name',
                   border: OutlineInputBorder(),
                 ),
