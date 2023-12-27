@@ -18,7 +18,6 @@ class _AddTaskState extends State<AddTask> {
   final TextEditingController _descriptionController = TextEditingController();
   DateTime? _selectedDate;
   TimeOfDay? _selectedTime;
-  bool _loading=false;
   int userId=StateManager.userId;
 
 

@@ -85,10 +85,10 @@ class _RegisterState extends State<Register> {
                   return null;
                 },
               ),
-              SizedBox(height: 16.0),
+              const SizedBox(height: 16.0),
               TextFormField(
                 controller: _controllerlname,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Last Name',
                   border: OutlineInputBorder(),
                 ),
@@ -99,11 +99,11 @@ class _RegisterState extends State<Register> {
                   return null;
                 },
               ),
-              SizedBox(height: 16.0),
+              const SizedBox(height: 16.0),
               TextFormField(
                 controller: _controllerEmail,
                 keyboardType: TextInputType.emailAddress,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Email',
                   border: OutlineInputBorder(),
                 ),
@@ -121,11 +121,11 @@ class _RegisterState extends State<Register> {
                   return null;
                 },
               ),
-              SizedBox(height: 16.0),
+              const SizedBox(height: 16.0),
               TextFormField(
                 controller: _controllerPassword,
                 obscureText: true,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Password',
                   border: OutlineInputBorder(),
                 ),
@@ -143,20 +143,20 @@ class _RegisterState extends State<Register> {
                   return null;
                 },
               ),
-              SizedBox(height: 24.0),
+              const SizedBox(height: 24.0),
               ElevatedButton(
                 onPressed: () async {
                   await registerUser();
                 },
-                child: Text('Create'),
                 style: ElevatedButton.styleFrom(
                   primary: const Color(0xFF00023D),
                 ),
+                child: const Text('Create'),
               ),
-              SizedBox(height: 16.0,),
+              const SizedBox(height: 16.0,),
               Visibility(
                   visible: _loading,
-                  child:CircularProgressIndicator()
+                  child: const CircularProgressIndicator()
               ),
             ],
           ),

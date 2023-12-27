@@ -8,9 +8,11 @@ import 'Register.dart';
 import 'login.dart';
 import 'package:http/http.dart' as http;
 
-void main() => runApp(MyApp());
+void main() => runApp(const MyApp());
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -25,6 +27,8 @@ class MyApp extends StatelessWidget {
 }
 
 class TaskList extends StatefulWidget {
+  const TaskList({super.key});
+
 
   @override
    _TaskListState createState() => _TaskListState();
@@ -137,7 +141,7 @@ class _TaskListState extends State<TaskList> {
         print('Delete task response: ${response.body}');
       }
 
-      // Remove deleted tasks from the local list
+
       setState(() {
         tasks.removeWhere((task) => task.isSelected);
         isDeleteButtonVisible = false;
@@ -167,19 +171,19 @@ class _TaskListState extends State<TaskList> {
           ),
           IconButton(
             onPressed: fetchTasks,
-            icon: Icon(Icons.refresh),
+            icon: const Icon(Icons.refresh),
           )
         ],
       ),
       body: Container(
         decoration: const BoxDecoration(
-          color: const Color(0xFF2A6594),
+          color: Color(0xFF2A6594),
         ),
         child: Column(
           children: [
             Visibility(
               visible: _loading,
-              child: CircularProgressIndicator(),
+              child: const CircularProgressIndicator(),
             ),
             Expanded(
               child: tasks.isEmpty
@@ -231,8 +235,8 @@ class _TaskListState extends State<TaskList> {
             setState(() {});
           }
         },
-        child: Icon(Icons.add),
         backgroundColor: const Color(0xFF00023D),
+        child: const Icon(Icons.add),
       ),
       persistentFooterButtons: isDeleteButtonVisible
           ? [
