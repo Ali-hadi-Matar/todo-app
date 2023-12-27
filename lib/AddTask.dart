@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:todo_app/login.dart';
 import 'Task.dart';
-
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:todo_app/Register.dart';
+import 'package:todo_app/main.dart';
 class AddTask extends StatefulWidget {
   final List<Task> tasks;
 
@@ -14,6 +18,9 @@ class _AddTaskState extends State<AddTask> {
   final TextEditingController _descriptionController = TextEditingController();
   DateTime? _selectedDate;
   TimeOfDay? _selectedTime;
+  bool _loading=false;
+  int userId=StateManager.userId;
+
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -43,7 +50,7 @@ class _AddTaskState extends State<AddTask> {
     }
   }
 
-  void _addTask() {
+  /*void _addTask() {
     Task newTask = Task(
       _descriptionController.text,
       _selectedDate,
@@ -52,10 +59,47 @@ class _AddTaskState extends State<AddTask> {
 
     setState(() {
       widget.tasks.add(newTask);
+      _descriptionController.clear();
+      _selectedDate = null;
+      _selectedTime = null;
     });
 
     Navigator.pop(context, true);
+  }*/
+
+  String formatTime(TimeOfDay time) {
+    return '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}:00';
   }
+  Future<void> insertTasks() async {
+    final insertURL = Uri.parse('https://quicktaskapp.000webhostapp.com/insertTasks.php');
+    String formattedTime = formatTime(_selectedTime!);
+
+    // Assuming these values are retrieved from your UI controls
+    String userIdString = userId.toString();  // Convert userId to String
+    String date = _selectedDate?.toLocal().toString() ?? '';  // Convert DateTime to String
+    String time = _selectedTime?.format(context) ?? '';  // Format TimeOfDay as String
+    String description = _descriptionController.text;  // Get text from the controller
+
+    try {
+      final responseInsert = await http.post(
+        insertURL,
+        body: {
+          'user-id': userIdString,
+          'date': date,
+          'time': formattedTime,
+          'description': description,
+        },
+      );
+
+      print('Response status: ${responseInsert.statusCode}');
+      print('Response body: ${responseInsert.body}');
+    Navigator.push(context, MaterialPageRoute(builder: (context)=>TaskList()));
+    } catch (error) {
+      print("Error during insertTasks: $error");
+    }
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -135,7 +179,7 @@ class _AddTaskState extends State<AddTask> {
             ),
            const SizedBox(height: 16),
             ElevatedButton(
-              onPressed: _addTask,
+              onPressed: insertTasks,
               style: ElevatedButton.styleFrom(
                 primary: Theme.of(context).primaryColor,
               ),

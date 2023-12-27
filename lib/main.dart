@@ -1,9 +1,13 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'AddTask.dart';
 import 'Task.dart';
 import 'Note.dart';
 import 'Register.dart';
 import 'login.dart';
+import 'package:http/http.dart' as http;
+
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
@@ -15,41 +19,48 @@ class MyApp extends StatelessWidget {
         primaryColor: const Color(0xFF00023D),
         hintColor:const Color(0xFF2A6594),
       ),
-      home:Login(),
+      home:const Login(),
     );
   }
 }
 
 class TaskList extends StatefulWidget {
+
   @override
    _TaskListState createState() => _TaskListState();
 }
 
 class _TaskListState extends State<TaskList> {
+  bool _loading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchTasks();
+  }
+
   List<Task> tasks = [];
   bool isDeleteButtonVisible = false;
-  bool _sortByNew=true;
+  bool _sortByNew = true;
+  int userId = StateManager.userId;
+
   void _toggleTaskSelection(int index) {
     setState(() {
       tasks[index].isSelected = !tasks[index].isSelected;
       isDeleteButtonVisible = tasks.any((task) => task.isSelected);
     });
   }
-  void _deleteSelectedTasks() {
-    setState(() {
-      tasks.removeWhere((task) => task.isSelected);
-      isDeleteButtonVisible = false;
 
-    });
-  }
+
   void _navigateToNotesPage() {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => NotesList(),
+        builder: (context) => const NotesList(),
       ),
     );
   }
+
   void _sortTasksByDate() {
     setState(() {
       _sortByNew = !_sortByNew;
@@ -68,56 +79,143 @@ class _TaskListState extends State<TaskList> {
       });
     });
   }
+
+
+  Future<void> fetchTasks() async {
+    setState(() {
+      _loading = true;
+    });
+    final getTaskUrl = Uri.parse(
+        'https://quicktaskapp.000webhostapp.com/getTasks.php');
+
+    try {
+      final response = await http.post(
+          getTaskUrl, body: {'user-id': userId.toString()});
+
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
+
+      if (response.statusCode == 200) {
+        print('Before updating tasks state: $tasks');
+        setState(() {
+          final jsonResponse = json.decode(response.body);
+
+          tasks = jsonResponse.map<Task>((row) {
+            String id = row['id'];
+            String description = row['description'];
+            String dateString = row['date'];
+            String timeString = row['time'];
+
+            DateTime date = DateTime.parse('$dateString $timeString');
+            TimeOfDay time = TimeOfDay.fromDateTime(
+                DateTime.parse('$dateString $timeString'));
+
+            return Task(id, description, date, time);
+          }).toList();
+        });
+
+        print('After updating tasks state: $tasks');
+      } else {
+        print('Failed to load tasks. Status code: ${response.statusCode}');
+      }
+      setState(() {
+        _loading = false;
+      });
+    } catch (error) {
+      print('Error fetching tasks: $error');
+    }
+  }
+
+  Future<void> _deleteSelectedTasks() async {
+    try {
+      for (Task task in tasks.where((task) => task.isSelected)) {
+        final deleteTaskUrl = Uri.parse(
+            'https://quicktaskapp.000webhostapp.com/deleteTasks.php');
+        final response = await http.post(
+            deleteTaskUrl, body: {'task-id': task.id.toString()});
+
+        print('Delete task response: ${response.body}');
+      }
+
+      // Remove deleted tasks from the local list
+      setState(() {
+        tasks.removeWhere((task) => task.isSelected);
+        isDeleteButtonVisible = false;
+      });
+    } catch (error) {
+      print(' Error deleting tasks: $error');
+    }
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title:const Text('To-Do List'),
-        backgroundColor:const  Color(0xFF00023D),
+        title: const Text('To-Do List'),
+        backgroundColor: const Color(0xFF00023D),
         centerTitle: true,
         actions: [
           IconButton(
-            icon:const Icon(Icons.note),
+            icon: const Icon(Icons.note),
             onPressed: _navigateToNotesPage,
-            color:const Color(0xFF2A6594),
-
+            color: const Color(0xFF2A6594),
           ),
-          IconButton(onPressed: _sortTasksByDate, icon: Icon(_sortByNew? Icons.arrow_downward:Icons.arrow_upward))
+          IconButton(
+            onPressed: _sortTasksByDate,
+            icon: Icon(_sortByNew ? Icons.arrow_downward : Icons.arrow_upward),
+          ),
+          IconButton(
+            onPressed: fetchTasks,
+            icon: Icon(Icons.refresh),
+          )
         ],
-        
       ),
       body: Container(
-        decoration:const  BoxDecoration(
+        decoration: const BoxDecoration(
           color: const Color(0xFF2A6594),
         ),
-        child: tasks.isEmpty
-            ? const Center(
-          child: Text(
-            'Nothing to do!\nEnjoy your day!',
-            style: TextStyle(fontSize: 40, color: Colors.white),
-          ),
-        )
-            : ListView.builder(
-          itemCount: tasks.length,
-          itemBuilder: (context, index) {
-            return Card(
-              color: Colors.white,
-              elevation: 2,
-              margin:
-              const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-              child: ListTile(
-                leading: Checkbox(
-                  value: tasks[index].isSelected,
-                  onChanged: (value) => _toggleTaskSelection(index),
+        child: Column(
+          children: [
+            Visibility(
+              visible: _loading,
+              child: CircularProgressIndicator(),
+            ),
+            Expanded(
+              child: tasks.isEmpty
+                  ? const Center(
+                child: Text(
+                  'Nothing to do!\nEnjoy your day!',
+                  style: TextStyle(fontSize: 40, color: Colors.white),
                 ),
-                title: Text(tasks[index].description),
-                subtitle: Text(
-                  'Date: ${tasks[index].date?.toLocal().toString() ?? 'Not set'}\n'
-                      'Time: ${tasks[index].time?.format(context) ?? 'Not set'}',
-                ),
+              )
+                  : ListView.builder(
+                itemCount: tasks.length,
+                itemBuilder: (context, index) {
+                  return Card(
+                    color: Colors.white,
+                    elevation: 2,
+                    margin: const EdgeInsets.symmetric(
+                        vertical: 8, horizontal: 16),
+                    child: ListTile(
+                      leading: Checkbox(
+                        value: tasks[index].isSelected,
+                        onChanged: (value) =>
+                            _toggleTaskSelection(index),
+                      ),
+                      title: Text(tasks[index].description),
+                      subtitle: Text(
+                        'Date: ${tasks[index].date?.toLocal().toString() ??
+                            'Not set'}\n'
+                            'Time: ${tasks[index].time?.format(context) ??
+                            'Not set'}',
+                      ),
+                    ),
+                  );
+                },
               ),
-            );
-          },
+            ),
+          ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
@@ -130,15 +228,14 @@ class _TaskListState extends State<TaskList> {
           );
 
           if (result == true) {
-            setState(() {
-            });
+            setState(() {});
           }
         },
         child: Icon(Icons.add),
         backgroundColor: const Color(0xFF00023D),
-
       ),
-      persistentFooterButtons:isDeleteButtonVisible ?[
+      persistentFooterButtons: isDeleteButtonVisible
+          ? [
         ElevatedButton(
           onPressed: () {
             _deleteSelectedTasks();
@@ -149,7 +246,7 @@ class _TaskListState extends State<TaskList> {
           child: const Text('Delete Selected'),
         ),
       ]
-      :null,
+          : null,
     );
   }
 }

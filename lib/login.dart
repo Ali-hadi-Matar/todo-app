@@ -10,6 +10,9 @@ class Login extends StatefulWidget {
   @override
   State<Login> createState() => _LoginState();
 }
+class StateManager {
+  static int userId = 0; //global var
+}
 
 class _LoginState extends State<Login> {
   final TextEditingController _controllerEmail = TextEditingController();
@@ -39,19 +42,21 @@ class _LoginState extends State<Login> {
           bool loginSuccess = loginData['success'];
 
           if (loginSuccess) {
+            StateManager.userId = int.tryParse(loginData['userId']) ?? 0;
             print("Login successful");
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => TaskList()),
-            );
+
+            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => TaskList()));
+
           } else {
             setState(() {
               _appBarText = "Invalid email or password";
+              _loading = false;
             });
           }
         } else {
           setState(() {
             _appBarText = "Invalid email or password";
+            _loading = false;
           });
         }
       } catch (error) {
@@ -96,8 +101,10 @@ class _LoginState extends State<Login> {
                 ),
                 validator: (value) {
                   if (value?.isEmpty ?? true) {
+                    _loading=false;
                     return 'Please enter your email';
                   } else if (!RegExp(r'^[\w-]+(\.[\w-]+)*@([a-zA-Z\d]+\.)+[a-zA-Z]{2,}$').hasMatch(value!)) {
+                    _loading=false;
                     return 'Please enter a valid email address';
                   }
                   return null;
@@ -113,8 +120,10 @@ class _LoginState extends State<Login> {
                 ),
                 validator: (value) {
                   if (value?.isEmpty ?? true) {
+                    _loading=false;
                     return 'Please enter your password';
                   } else if (value!.length < 8) {
+                    _loading=false;
                     return 'Password must be at least 8 characters';
                   }
                   return null;
