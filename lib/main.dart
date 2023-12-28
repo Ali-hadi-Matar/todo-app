@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'AddTask.dart';
 import 'Task.dart';
 import 'Note.dart';
-import 'Register.dart';
 import 'login.dart';
+import 'SplashScreen.dart';
 import 'package:http/http.dart' as http;
 
 void main() => runApp(const MyApp());
@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
         primaryColor: const Color(0xFF00023D),
         hintColor:const Color(0xFF2A6594),
       ),
-      home:const Login(),
+      home:const SplashScreen(),
     );
   }
 }
@@ -119,6 +119,7 @@ class _TaskListState extends State<TaskList> {
         });
 
         print('After updating tasks state: $tasks');
+       print("user id: ${userId}");
       } else {
         print('Failed to load tasks. Status code: ${response.statusCode}');
       }
@@ -172,6 +173,11 @@ class _TaskListState extends State<TaskList> {
           IconButton(
             onPressed: fetchTasks,
             icon: const Icon(Icons.refresh),
+          ),
+          IconButton(onPressed:(){
+            logout(context);
+          },
+              icon:const Icon(Icons.logout_rounded)
           )
         ],
       ),
@@ -254,3 +260,4 @@ class _TaskListState extends State<TaskList> {
     );
   }
 }
+

@@ -1,9 +1,9 @@
+import 'package:encrypted_shared_preferences/encrypted_shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:todo_app/Register.dart';
 import 'package:todo_app/main.dart';
-
 class Login extends StatefulWidget {
   const Login({Key? key});
 
@@ -11,7 +11,8 @@ class Login extends StatefulWidget {
   State<Login> createState() => _LoginState();
 }
 class StateManager {
-  static int userId = 0; //global var
+  static int userId = 0;
+  static int id2=0;
 }
 
 class _LoginState extends State<Login> {
@@ -20,6 +21,8 @@ class _LoginState extends State<Login> {
   final _formKey = GlobalKey<FormState>();
   bool _loading = false;
   String _appBarText = 'Login';
+
+
 
   Future<void> loginUser() async {
     setState(() {
@@ -41,8 +44,17 @@ class _LoginState extends State<Login> {
           final loginData = json.decode(responseLogin.body);
           bool loginSuccess = loginData['success'];
 
+
+
           if (loginSuccess) {
+
             StateManager.userId = int.tryParse(loginData['userId']) ?? 0;
+            StateManager.id2=StateManager.userId;
+            EncryptedSharedPreferences encryptedSharedPreferences = EncryptedSharedPreferences();
+            encryptedSharedPreferences.setString('email', _controllerEmail.text.trim());
+            encryptedSharedPreferences.setString('password', _controllerPassword.text.trim() );
+            encryptedSharedPreferences.setString('id', StateManager.id2.toString());
+
             print("Login successful");
 
             Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => TaskList()));
@@ -67,6 +79,13 @@ class _LoginState extends State<Login> {
         });
       }
     }
+  }
+
+  @override
+  void dispose() {
+    _controllerEmail.dispose();
+    _controllerPassword.dispose();
+    super.dispose();
   }
 
   @override
